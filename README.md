@@ -1,8 +1,6 @@
 # 🌦️ Weather Trend Forecasting
 
-**PM Accelerator — Data Science Technical Assessment**
-
-> **PM Accelerator Mission:** Accelerating the development of the next
+> Accelerating the development of the next
 > generation of product managers through real-world experience,
 > mentorship, and community.
 
@@ -71,22 +69,42 @@ jupyter notebook Weather_Forecasting.ipynb
 - Humidity negatively correlated with UV index (-0.55)
 - Clear annual seasonal cycle visible in global daily averages
 
-### 3. Forecasting Model — Facebook Prophet
+### 3. Forecasting — Three Models Tested
+
+#### Model 1: Original Prophet (Baseline)
 - Aggregated 130K+ rows into **674 daily global averages**
 - Train/test split: 614 days training, 60 days holdout test
-- Configured with yearly seasonality, conservative changepoint scale
+- Yearly seasonality, changepoint_prior_scale = 0.05
+
+#### Model 2: Tuned Prophet
+- Systematically tested 8 values of `changepoint_prior_scale` (0.005 → 0.05)
+- Optimal value found: **0.03**
+- Also tested additive vs multiplicative seasonality — additive won
+
+#### Model 3: Tuned Prophet + Weather Regressors
+- Added humidity, pressure, UV index, cloud cover, wind as additional inputs
+- Result: performance degraded — regressors are seasonally collinear with
+  temperature, meaning Prophet's built-in seasonality already captures
+  this information. More features did not mean a better model.
 
 ### 4. Model Evaluation
 
-| Metric | Value |
-|--------|-------|
-| MAE    | 0.81°C |
-| RMSE   | 1.05°C |
-| MAPE   | 4.97% |
+| Model | MAE | RMSE | MAPE |
+|-------|-----|------|------|
+| Original Prophet | 0.81°C | 1.05°C | 4.97% |
+| Tuned Prophet | 0.63°C | 0.78°C | 3.81% |
+| Tuned + Regressors | 1.02°C | 1.20°C | 6.22% |
 
-Model correctly captures seasonal patterns — peaking July–September
-(+4°C above trend) and troughing in January (−4°C below trend).
-Forecast extends **90 days beyond the test period** to June 2026.
+**Best model: Tuned Prophet — 22.7% improvement over baseline**
+
+Forecast extends **90 days beyond the test period** to June 2026
+
+### 5. Key Findings
+- Global temperatures follow a clear annual cycle: peak July–September
+  (+4°C above trend), trough in January (−4°C below trend)
+- Hyperparameter tuning reduced MAE from 0.81°C to 0.63°C
+- Adding weather regressors degraded performance — confirming that
+  collinear features add noise, not signal
 
 ---
 
@@ -99,7 +117,8 @@ Forecast extends **90 days beyond the test period** to June 2026.
 | `train_test_split.png` | Visual of training vs test period |
 | `prophet_forecast.png` | Actuals vs forecast with 95% confidence interval |
 | `prophet_components.png` | Prophet trend and yearly seasonality components |
-
+| `tuning_changepoint.png` | Changepoint prior scale tuning curve |
+| `model_comparison.png` | Original vs tuned model on test period |
 ---
 
 ## 🛠️ Dependencies
@@ -118,5 +137,5 @@ kaggle
 
 ## 👤 Author
 
-**Chelsi** — Data Science Intern Applicant  
+**Chelsi Patel** 
 [GitHub](https://github.com/Chelsi08)
