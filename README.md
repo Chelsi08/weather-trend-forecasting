@@ -1,17 +1,12 @@
 # 🌦️ Weather Trend Forecasting
 
-> Accelerating the development of the next
-> generation of product managers through real-world experience,
-> mentorship, and community.
+Analyzing 130,978 global weather readings across 211 countries to forecast temperature trends using time series modeling.
 
 ---
 
 ## 📌 Project Overview
 
-This project analyzes the **Global Weather Repository** dataset to
-forecast future global temperature trends using time series modeling.
-It covers end-to-end data science workflow: cleaning, exploratory
-analysis, forecasting, and model evaluation.
+An end-to-end data science project covering data cleaning, exploratory analysis, time series forecasting, hyperparameter tuning, and model evaluation using Facebook Prophet.
 
 ---
 
@@ -28,9 +23,13 @@ analysis, forecasting, and model evaluation.
 ```
 weather-trend-forecasting/
 │
-├── Weather_Forecasting.ipynb   # Main notebook (all code)
-├── requirements.txt            # Dependencies
-└── README.md                   # This file
+├── weather_trend_forecast.ipynb  # Main notebook (all code)
+├── daily_global.csv              # Aggregated daily global averages
+├── forecast.csv                  # Prophet forecast output
+├── test_results.csv              # Model evaluation results
+├── metrics.json                  # MAE, RMSE, MAPE scores
+├── requirements.txt              # Dependencies
+└── README.md                     # This file
 ```
 
 ---
@@ -38,7 +37,7 @@ weather-trend-forecasting/
 ## ⚙️ How to Run
 
 ### Option 1 — Google Colab (recommended)
-1. Open `Weather_Forecasting.ipynb` in Google Colab
+1. Open `weather_trend_forecast.ipynb` in Google Colab
 2. Run Cell 1 — it will prompt you to upload your `kaggle.json` API key
 3. Run all remaining cells in order
 
@@ -47,7 +46,7 @@ weather-trend-forecasting/
 git clone https://github.com/Chelsi08/weather-trend-forecasting
 cd weather-trend-forecasting
 pip install -r requirements.txt
-jupyter notebook Weather_Forecasting.ipynb
+jupyter notebook weather_trend_forecast.ipynb
 ```
 > You will need a Kaggle API key (`kaggle.json`) in `~/.kaggle/`
 
@@ -65,7 +64,7 @@ jupyter notebook Weather_Forecasting.ipynb
 ### 2. Exploratory Data Analysis
 - Global mean temperature: **21.4°C** (right-skewed distribution)
 - **67%** of observations recorded zero precipitation
-- Strong positive correlation between temperature and UV index (0.49)
+- Strong positive correlation between temperature and UV index (+0.49)
 - Humidity negatively correlated with UV index (-0.55)
 - Clear annual seasonal cycle visible in global daily averages
 
@@ -79,13 +78,13 @@ jupyter notebook Weather_Forecasting.ipynb
 #### Model 2: Tuned Prophet
 - Systematically tested 8 values of `changepoint_prior_scale` (0.005 → 0.05)
 - Optimal value found: **0.03**
-- Also tested additive vs multiplicative seasonality — additive won
+- Tested additive vs multiplicative seasonality — additive won
 
 #### Model 3: Tuned Prophet + Weather Regressors
-- Added humidity, pressure, UV index, cloud cover, wind as additional inputs
+- Added humidity, pressure, UV index, cloud cover, wind as inputs
 - Result: performance degraded — regressors are seasonally collinear with
-  temperature, meaning Prophet's built-in seasonality already captures
-  this information. More features did not mean a better model.
+  temperature. Prophet's built-in seasonality already captures this information.
+  More features did not mean a better model.
 
 ### 4. Model Evaluation
 
@@ -97,14 +96,14 @@ jupyter notebook Weather_Forecasting.ipynb
 
 **Best model: Tuned Prophet — 22.7% improvement over baseline**
 
-Forecast extends **90 days beyond the test period** to June 2026
+Forecast extends 90 days beyond the test period to June 2026.
 
 ### 5. Key Findings
 - Global temperatures follow a clear annual cycle: peak July–September
   (+4°C above trend), trough in January (−4°C below trend)
 - Hyperparameter tuning reduced MAE from 0.81°C to 0.63°C
-- Adding weather regressors degraded performance — confirming that
-  collinear features add noise, not signal
+- Adding weather regressors degraded performance — collinear features
+  add noise, not signal
 
 ---
 
@@ -112,13 +111,14 @@ Forecast extends **90 days beyond the test period** to June 2026
 
 | Plot | Description |
 |------|-------------|
-| `eda_global_patterns.png` | Temperature, humidity, precipitation distributions + correlation heatmap |
-| `eda_time_trends.png` | Daily global trends across all features over time |
-| `train_test_split.png` | Visual of training vs test period |
-| `prophet_forecast.png` | Actuals vs forecast with 95% confidence interval |
-| `prophet_components.png` | Prophet trend and yearly seasonality components |
-| `tuning_changepoint.png` | Changepoint prior scale tuning curve |
-| `model_comparison.png` | Original vs tuned model on test period |
+| EDA global patterns | Temperature, humidity, precipitation distributions + correlation heatmap |
+| EDA time trends | Daily global trends across all features over time |
+| Train/test split | Visual of training vs test period |
+| Prophet forecast | Actuals vs forecast with 95% confidence interval |
+| Prophet components | Trend and yearly seasonality components |
+| Changepoint tuning | Changepoint prior scale tuning curve |
+| Model comparison | Original vs tuned model on test period |
+
 ---
 
 ## 🛠️ Dependencies
@@ -132,10 +132,3 @@ statsmodels
 prophet
 kaggle
 ```
-
----
-
-## 👤 Author
-
-**Chelsi Patel** 
-[GitHub](https://github.com/Chelsi08)
